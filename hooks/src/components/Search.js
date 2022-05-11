@@ -6,7 +6,7 @@ const Search = () => {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
-    (async () => {
+    const f = async () => {
       const { data } = await axios.get("https://en.wikipedia.org/w/api.php", {
         params: {
           action: "query",
@@ -16,18 +16,34 @@ const Search = () => {
           srsearch: term,
         },
       });
+      setResults(data.query.search);
+    };
+
+    const timeoutId = setTimeout(() => {
       if (term) {
-        setResults(data.query.search);
+        f();
       }
-    })();
+    }, 500);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [term]);
 
   const renderedResults = results.map((result) => {
     return (
-      <div key={result.oageid} className="item">
+      <div key={result.pageid} className="item">
         <div className=" content">
           <div className="header"> {result.title}</div>
-          {result.snippet}
+          <span dangerouslySetInnerHTML={{ __html: result.snippet }}></span>
+        </div>
+        <div className="right floated content">
+          <a
+            className="ui button"
+            href={`https://en.wikipedia.org?curid=${result.pageid}?`}
+          >
+            Visit
+          </a>
         </div>
       </div>
     );
