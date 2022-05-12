@@ -23,10 +23,10 @@ const Dropdown = ({ options, selected, onSelectedChange, labelSelect }) => {
       setOpen(false);
     };
 
-    document.addEventListener("click", onBodyClicked, { capture: true });
+    document.addEventListener("click", onBodyClicked);
 
     return () => {
-      document.body.removeEventListener("click", onBodyClicked);
+      document.removeEventListener("click", onBodyClicked);
     };
   }, []);
 
